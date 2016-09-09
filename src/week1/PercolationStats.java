@@ -20,11 +20,15 @@ public class PercolationStats {
             double openSites = 0;
             Percolation percolation = new Percolation(n);
             do {
-                openSites++;
-                int row = StdRandom.uniform(n) + 1;
-                int column = StdRandom.uniform(n) + 1;
+                int row;
+                int column;
+                do {
+                    row = StdRandom.uniform(n) + 1;
+                    column = StdRandom.uniform(n) + 1;
+                } while (percolation.isOpen(row, column));
 
                 percolation.open(row, column);
+                openSites++;
             } while (!percolation.percolates());
 
             fractions[i] = openSites / (n * n);
