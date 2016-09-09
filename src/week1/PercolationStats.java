@@ -1,6 +1,7 @@
 package week1;
 
-import java.util.Random;
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
@@ -16,53 +17,42 @@ public class PercolationStats {
         fractions = new double[trials];
 
         for (int i = 0; i < trials; i++) {
-            double fraction = 0;
+            double openSites = 0;
             Percolation percolation = new Percolation(n);
-            Random random = new Random();
             do {
-                fraction++;
-                int row = random.nextInt(n) + 1;
-                int column = random.nextInt(n) + 1;
+                openSites++;
+                int row = StdRandom.uniform(n) + 1;
+                int column = StdRandom.uniform(n) + 1;
 
                 percolation.open(row, column);
             } while (!percolation.percolates());
 
-            fractions[i] = fraction;
+            fractions[i] = openSites / (n * n);
         }
     }
 
     public double mean() {
-        double sumFractions = 0;
-
-        for (double fraction : fractions) {
-            sumFractions += fraction;
-        }
-
-        return sumFractions / trials;
+        return StdStats.mean(fractions);
     }
 
     public double stddev() {
-        double mean = mean();
-        double sumDeviations = 0;
-
-        for (double fraction : fractions) {
-            sumDeviations += Math.pow(fraction - mean, 2);
-        }
-
-        return sumDeviations / (trials - 1);
+        return StdStats.stddev(fractions);
     }
 
     public double confidenceLo() {
-        double mean = mean();
-        double stddev = stddev();
-
-        return mean - 1.96 * Math.sqrt(stddev) / Math.sqrt(trials);
+        return mean() - 1.96 * Math.sqrt(stddev()) / Math.sqrt(trials);
     }
 
     public double confidenceHi() {
-        double mean = mean();
-        double stddev = stddev();
+        return mean() + 1.96 * Math.sqrt(stddev()) / Math.sqrt(trials);
+    }
 
-        return mean + 1.96 * Math.sqrt(stddev) / Math.sqrt(trials);
+    public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
+        PercolationStats percolationStats = new PercolationStats(n, trials);
+        System.out.println("mean: " + percolationStats.mean());
+        System.out.println("stddev: " + percolationStats.stddev());
+        System.out.println("95% confidence interval: " + percolationStats.confidenceLo() + ", " + percolationStats.confidenceHi());
     }
 }

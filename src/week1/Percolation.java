@@ -1,5 +1,6 @@
 package week1;
 
+import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -94,6 +95,22 @@ public class Percolation {
 
     private boolean areCorrectIndices(int i, int j) {
         return i > 0 && i <= gridSize && j > 0 && j <= gridSize;
+    }
+
+    public static void main(String[] args) {
+        //System.setIn(new FileInputStream("./data/wayne98.txt"));
+        int n = StdIn.readInt();
+        Percolation percolation = new Percolation(n);
+        while (!StdIn.isEmpty()) {
+            int row = StdIn.readInt();
+            int column = StdIn.readInt();
+
+            if (!percolation.isOpen(row, column)) {
+                percolation.open(row, column);
+            }
+        }
+
+        System.out.println(percolation.percolates() ? "Percolates" : "Not percolates");
     }
 }
 
