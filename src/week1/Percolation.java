@@ -87,7 +87,7 @@ public class Percolation {
 
     public boolean percolates() {
         for (int i = 0; i < n; i++) {
-            if (isFull(n, i + 1)) {
+            if (isOpen(n, i + 1) && isFull(n, i + 1)) {
                 return true;
             }
         }
