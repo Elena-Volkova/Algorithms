@@ -4,8 +4,9 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
-    private WeightedQuickUnionUF weightedQuickUnionUF;
-    private int[] grid;
+    private WeightedQuickUnionUF weightedQuickUnionUFPercolation;
+    private WeightedQuickUnionUF weightedQuickUnionUFFull;
+    private boolean[] grid;
     private int n;
 
     public Percolation(int n) {
@@ -13,12 +14,23 @@ public class Percolation {
             throw new IllegalArgumentException();
         }
 
+        weightedQuickUnionUFPercolation = new WeightedQuickUnionUF(n * n + 2);
+        weightedQuickUnionUFFull = new WeightedQuickUnionUF(n * n + 1);
+        grid = new boolean[n * n + 2];
         this.n = n;
-        weightedQuickUnionUF = new WeightedQuickUnionUF(n * n);
-        grid = new int[n * n];
 
         for (int i = 0; i < n * n; i++) {
-            grid[i] = -1;
+            grid[i] = false;
+        }
+
+        //Initialize virtual sites
+        grid[n * n] = true;
+        grid[n * n + 1] = true;
+
+        for (int i = 0; i < n; i++) {
+            weightedQuickUnionUFPercolation.union(n * n, xyTo1D(0, i));
+            weightedQuickUnionUFFull.union(n * n, xyTo1D(0, i));
+            weightedQuickUnionUFPercolation.union(n * n + 1, xyTo1D(n - 1, i));
         }
     }
 
@@ -27,45 +39,23 @@ public class Percolation {
             throw new IndexOutOfBoundsException();
         }
 
-        if (!isOpen(i, j)) {
-            boolean isFull = i == 1;
+        int indexCurrent = xyTo1D(i - 1, j - 1);
+        grid[indexCurrent] = true;
 
-            int indexCurrent = xyTo1D(i - 1, j - 1);
-            int indexLeft = xyTo1D(i - 1, j - 2);
-            if (validate(i, j - 1) && isOpen(i, j - 1) && !weightedQuickUnionUF.connected(indexCurrent, indexLeft)) {
-                if (isFull(i, j - 1)) {
-                    isFull = true;
-                }
-                weightedQuickUnionUF.union(indexCurrent, indexLeft);
-            }
-            int indexUp = xyTo1D(i - 2, j - 1);
-            if (validate(i - 1, j) && isOpen(i - 1, j) && !weightedQuickUnionUF.connected(indexCurrent, indexUp)) {
-                if (isFull(i - 1, j)) {
-                    isFull = true;
-                }
-                weightedQuickUnionUF.union(indexCurrent, indexUp);
-            }
-            int indexRight = xyTo1D(i - 1, j);
-            if (validate(i, j + 1) && isOpen(i, j + 1) && !weightedQuickUnionUF.connected(indexCurrent, indexRight)) {
-                if (isFull(i, j + 1)) {
-                    isFull = true;
-                }
-                weightedQuickUnionUF.union(indexCurrent, indexRight);
-            }
-            int indexDown = xyTo1D(i, j - 1);
-            if (validate(i + 1, j) && isOpen(i + 1, j) && !weightedQuickUnionUF.connected(indexCurrent, indexDown)) {
-                if (isFull(i + 1, j)) {
-                    isFull = true;
-                }
-                weightedQuickUnionUF.union(indexCurrent, indexDown);
-            }
+        int indexLeft = xyTo1D(i - 1, j - 2);
+        connect(i, j - 1, indexCurrent, indexLeft);
+        int indexUp = xyTo1D(i - 2, j - 1);
+        connect(i - 1, j, indexCurrent, indexUp);
+        int indexRight = xyTo1D(i - 1, j);
+        connect(i, j + 1, indexCurrent, indexRight);
+        int indexDown = xyTo1D(i, j - 1);
+        connect(i + 1, j, indexCurrent, indexDown);
+    }
 
-            grid[indexCurrent] = 0;
-
-            if (isFull) {
-                grid[weightedQuickUnionUF.find(indexCurrent)] = 1;
-            }
-
+    private void connect(int i, int j, int indexCurrent, int indexToConnect) {
+        if (validate(i, j) && isOpen(i, j)) {
+            weightedQuickUnionUFPercolation.union(indexCurrent, indexToConnect);
+            weightedQuickUnionUFFull.union(indexCurrent, indexToConnect);
         }
     }
 
@@ -74,7 +64,7 @@ public class Percolation {
             throw new IndexOutOfBoundsException();
         }
 
-        return grid[xyTo1D(i - 1, j - 1)] != -1;
+        return grid[xyTo1D(i - 1, j - 1)];
     }
 
     public boolean isFull(int i, int j) {
@@ -82,16 +72,16 @@ public class Percolation {
             throw new IndexOutOfBoundsException();
         }
 
-        return grid[xyTo1D(i - 1, j - 1)] == 1 || grid[weightedQuickUnionUF.find(xyTo1D(i - 1, j - 1))] == 1;
+        return isOpen(i, j) && weightedQuickUnionUFFull.connected(n * n, xyTo1D(i - 1, j - 1));
+
     }
 
     public boolean percolates() {
-        for (int i = 0; i < n; i++) {
-            if (isOpen(n, i + 1) && isFull(n, i + 1)) {
-                return true;
-            }
+        if (n == 1) {
+            return isOpen(n, n);
+        } else {
+            return weightedQuickUnionUFPercolation.connected(n * n, n * n + 1);
         }
-        return false;
     }
 
     private boolean validate(int i, int j) {
