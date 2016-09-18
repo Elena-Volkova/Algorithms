@@ -62,4 +62,27 @@ public class TestDeque {
 
         assert deque.size() == 2;
     }
+
+    public void test3() {
+        Deque<Integer> deque = new Deque<>();
+
+        deque.addFirst(1);
+        deque.addFirst(2);
+        deque.addLast(3);
+        deque.removeFirst();
+        deque.addLast(5);
+        deque.addLast(6);
+        deque.addLast(7);
+        deque.addFirst(8);
+        deque.removeFirst();
+        deque.removeLast();
+
+        assert deque.size() == 4;
+
+        Iterator<Integer> iterator = deque.iterator();
+        assert iterator.next().equals(1);
+        assert iterator.next().equals(3);
+        assert iterator.next().equals(5);
+        assert iterator.next().equals(6);
+    }
 }
