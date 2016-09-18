@@ -92,14 +92,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedIterator implements Iterator<Item> {
+        private RandomizedQueue<Item> randomizedQueue;
         private int i;
 
         public RandomizedIterator() {
-            i = n - 1;
+            i = 0;
+            randomizedQueue = new RandomizedQueue<>();
+            for (Item item : a) {
+                if (item != null) {
+                    randomizedQueue.enqueue(item);
+                    i++;
+                }
+            }
         }
 
         public boolean hasNext() {
-            return i >= 0;
+            return i > 0;
         }
 
         public void remove() {
@@ -111,14 +119,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException();
             }
 
-            int index;
-            do {
-                index = StdRandom.uniform(n);
-            } while (a[index] == null);
-
             i--;
 
-            return a[index];
+            return randomizedQueue.dequeue();
         }
     }
 
@@ -127,5 +130,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         testRandomizedQueue.testAddFirstAddLast();
         testRandomizedQueue.testAddFirstAddLastRemove();
         testRandomizedQueue.test1();
+        testRandomizedQueue.test2();
     }
 }

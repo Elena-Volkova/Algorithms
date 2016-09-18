@@ -40,4 +40,17 @@ public class TestRandomizedQueue {
             System.out.println(value);
         }
     }
+
+    public void test2() {
+        RandomizedQueue<String> randomizedQueue = new RandomizedQueue<>();
+        randomizedQueue.enqueue("111");
+        randomizedQueue.enqueue("222");
+        randomizedQueue.enqueue("333");
+
+        for (String value1 : randomizedQueue) {
+            for (String value2 : randomizedQueue) {
+                System.out.println(value1 + " : " + value2);
+            }
+        }
+    }
 }
