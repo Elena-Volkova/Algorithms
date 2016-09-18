@@ -53,4 +53,46 @@ public class TestRandomizedQueue {
             }
         }
     }
+
+    public void test3() {
+        RandomizedQueue<String> randomizedQueue = new RandomizedQueue<>();
+        randomizedQueue.enqueue("111");
+        randomizedQueue.enqueue("222");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+        randomizedQueue.enqueue("333");
+
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+        randomizedQueue.dequeue();
+
+        for (String value : randomizedQueue) {
+            System.out.println(value);
+        }
+    }
 }

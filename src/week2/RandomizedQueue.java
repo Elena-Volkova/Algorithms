@@ -29,9 +29,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         // textbook implementation
         Item[] temp = (Item[]) new Object[capacity];
+        int newIndex = 0;
         for (int i = 0; i < n; i++) {
-            temp[i] = a[i];
+            if (a[i] != null) {
+                temp[newIndex] = a[i];
+                newIndex++;
+            }
         }
+        n = newIndex;
         a = temp;
     }
 
@@ -67,7 +72,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             lastItemIndex--;
         }
 
-        if (n > 0 && n == a.length / 4) {
+        if (size > 0 && size == a.length / 4) {
             resize(a.length / 2);
         }
 
@@ -131,5 +136,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         testRandomizedQueue.testAddFirstAddLastRemove();
         testRandomizedQueue.test1();
         testRandomizedQueue.test2();
+        testRandomizedQueue.test3();
     }
 }
